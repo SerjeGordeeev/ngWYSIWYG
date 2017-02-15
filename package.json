@@ -38,6 +38,7 @@
   },
   "homepage": "https://github.com/psergus/ngWYSIWYG#readme",
   "scripts": {
-    "build": "gulp build"
+    "build": "gulp build",
+    "watch": "gulp develop"
   }
 }

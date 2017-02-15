@@ -36,5 +36,8 @@
   "bugs": {
     "url": "https://github.com/psergus/ngWYSIWYG/issues"
   },
-  "homepage": "https://github.com/psergus/ngWYSIWYG#readme"
+  "homepage": "https://github.com/psergus/ngWYSIWYG#readme",
+  "scripts": {
+    "build": "gulp build"
+  }
 }

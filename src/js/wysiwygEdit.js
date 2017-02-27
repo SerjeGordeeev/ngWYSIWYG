@@ -519,6 +519,10 @@ angular.module('ngWYSIWYG').directive('wysiwygEdit', ['ngpUtils', 'NGP_EVENTS', 
 				if (!scope.api || !scope.api.customAction || !angular.isFunction(scope.api.customAction)) {
 					return;
 				}
+				loadVars();
+				if (iframeWindow.getSelection().focusNode == null) {
+					return;
+				} // user should at least click the editor
 				var val = scope.api.customAction.apply(scope.api.scope || null, [actionType]);
 				//resolve the promise when finish action
 				$q

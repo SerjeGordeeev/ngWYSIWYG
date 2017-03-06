@@ -3,6 +3,16 @@ angular.module('ngWYSIWYG').directive('ngpContentFrame', ['ngpImageResizer', 'ng
 
 		//kudos http://stackoverflow.com/questions/13881834/bind-angular-cross-iframes-possible
 		var linker = function( scope, $element, attrs, ctrl ) {
+			function handlePaste (e) {
+				e.preventDefault();
+
+				var clipboardData = e.clipboardData || window.clipboardData,
+					cleanText = clipboardData.getData('text/plain');
+
+				scope.$broadcast("insertElement", cleanText);
+			}
+
+
 			var $document = $element[0].contentDocument;
 			$document.open(); //damn Firefox. kudos: http://stackoverflow.com/questions/15036514/why-can-i-not-set-innerhtml-of-an-iframe-body-in-firefox
 			$document.write('<!DOCTYPE html><html><head></head><body contenteditable="true"></body></html>');
@@ -12,6 +22,7 @@ angular.module('ngWYSIWYG').directive('ngpContentFrame', ['ngpImageResizer', 'ng
 			var $body = angular.element($element[0].contentDocument.body);
 			var $head = angular.element($element[0].contentDocument.head);
 			$body.attr('contenteditable', 'true');
+			$body[0].addEventListener('paste', handlePaste);
 
 			// fixing issue that makes caret disappear on chrome (https://github.com/psergus/ngWYSIWYG/issues/22)
 			$document.addEventListener('click', function(event) {
@@ -40,7 +51,7 @@ angular.module('ngWYSIWYG').directive('ngpContentFrame', ['ngpImageResizer', 'ng
 
 			var debounce = null; //we will debounce the event in case of the rapid movement. Overall, we are intereseted in the last cursor/caret position
 			//view --> model
-			$body.bind('click keyup change paste', function() { //we removed 'blur' event
+			$body.bind('click keyup change', function() { //we removed 'blur' event
 				//lets debounce it
 				if(debounce) {
 					$timeout.cancel(debounce);

@@ -14,8 +14,17 @@ angular.module('ngWYSIWYG').directive('ngpContentFrame', ['ngpImageResizer', 'ng
 
 
 			var $document = $element[0].contentDocument;
+			var styles = "<style>" +
+				"* {box-sizing: border-box;} " +
+				"html, body {margin: 0; height: 100%; min-height: 100%;} " +
+				"body {padding: 17px;} " +
+				"table {border-collapse: collapse;} " +
+				"table, tr, td {border: 1px dashed #cecfd0;} " +
+				"td {padding: 2px; text-align: left;} " +
+				"img {margin: 31px;}" +
+				"</style>";
 			$document.open(); //damn Firefox. kudos: http://stackoverflow.com/questions/15036514/why-can-i-not-set-innerhtml-of-an-iframe-body-in-firefox
-			$document.write('<!DOCTYPE html><html><head></head><body contenteditable="true"><br/></body></html>');
+			$document.write('<!DOCTYPE html><html><head>'+styles+'</head><body contenteditable="true"></body></html>');
 			$document.close();
 			$document.designMode = 'On';
 			ngpImageResizer.setup(scope, $document);

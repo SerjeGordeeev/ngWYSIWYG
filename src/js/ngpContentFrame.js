@@ -36,7 +36,7 @@ angular.module('ngWYSIWYG').directive('ngpContentFrame', ['ngpImageResizer', 'ng
 			// fixing issue that makes caret disappear on chrome (https://github.com/psergus/ngWYSIWYG/issues/22)
 			$document.addEventListener('click', function(event) {
 				if (event.target.tagName === 'HTML') {
-					event.target.querySelector('body').focus();
+					document.querySelector('body').focus();
 				}
 				scope.$emit(NGP_EVENTS.ELEMENT_CLICKED, event.target);
 			});
@@ -141,31 +141,36 @@ angular.module('ngWYSIWYG').directive('ngpContentFrame', ['ngpImageResizer', 'ng
 				var sel, range;
 				if ($document.defaultView.getSelection) {
 					sel = $document.defaultView.getSelection();
+
 					if (sel.getRangeAt && sel.rangeCount) {
 						range = sel.getRangeAt(0);
-						range.deleteContents();
-
-						// Range.createContextualFragment() would be useful here but is
-						// only relatively recently standardized and is not supported in
-						// some browsers (IE9, for one)
-						var el = $document.createElement("div");
-						el.innerHTML = html;
-						var frag = $document.createDocumentFragment(), node, lastNode;
-						while ((node = el.firstChild)) {
-							lastNode = frag.appendChild(node);
-						}
-						var firstNode = frag.firstChild;
-						range.insertNode(frag);
-
-						// Preserve the selection
-						if (lastNode) {
-							range = range.cloneRange();
-							range.setStartAfter(lastNode);
-							range.collapse(true);
-							sel.removeAllRanges();
-							sel.addRange(range);
-						}
 					}
+					else {
+						range = document.createRange();
+						range.selectNode($document.body)
+					}
+					range.deleteContents();
+					// Range.createContextualFragment() would be useful here but is
+					// only relatively recently standardized and is not supported in
+					// some browsers (IE9, for one)
+					var el = $document.createElement("div");
+					el.innerHTML = html;
+					var frag = $document.createDocumentFragment(), node, lastNode;
+					while ((node = el.firstChild)) {
+						lastNode = frag.appendChild(node);
+					}
+					var firstNode = frag.firstChild;
+					range.insertNode(frag);
+
+					// Preserve the selection
+					if (lastNode) {
+						range = range.cloneRange();
+						range.setStartAfter(lastNode);
+						range.collapse(true);
+						sel.removeAllRanges();
+						sel.addRange(range);
+					}
+
 				} else if ($document.selection && $document.selection.type != "Control") {
 					// IE < 9
 					$document.selection.createRange().pasteHTML(html);

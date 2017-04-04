@@ -144,12 +144,12 @@ angular.module('ngWYSIWYG').directive('ngpContentFrame', ['ngpImageResizer', 'ng
 
 					if (sel.getRangeAt && sel.rangeCount) {
 						range = sel.getRangeAt(0);
+						range.deleteContents();
 					}
 					else {
 						range = document.createRange();
 						range.selectNode($document.body)
 					}
-					range.deleteContents();
 					// Range.createContextualFragment() would be useful here but is
 					// only relatively recently standardized and is not supported in
 					// some browsers (IE9, for one)

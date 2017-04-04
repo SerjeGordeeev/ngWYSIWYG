@@ -139,36 +139,37 @@ angular.module('ngWYSIWYG').directive('ngpContentFrame', ['ngpImageResizer', 'ng
 
 			scope.$on('insertElement', function(event, html) {
 				var sel, range;
+
 				if ($document.defaultView.getSelection) {
 					sel = $document.defaultView.getSelection();
 
 					if (sel.getRangeAt && sel.rangeCount) {
 						range = sel.getRangeAt(0);
 						range.deleteContents();
+
+						// Range.createContextualFragment() would be useful here but is
+						// only relatively recently standardized and is not supported in
+						// some browsers (IE9, for one)
+						var el = $document.createElement("div");
+						el.innerHTML = html;
+						var frag = $document.createDocumentFragment(), node, lastNode;
+						while ((node = el.firstChild)) {
+							lastNode = frag.appendChild(node);
+						}
+						var firstNode = frag.firstChild;
+						range.insertNode(frag);
+
+						// Preserve the selection
+						if (lastNode) {
+							range = range.cloneRange();
+							range.setStartAfter(lastNode);
+							range.collapse(true);
+							sel.removeAllRanges();
+							sel.addRange(range);
+						}
 					}
 					else {
-						range = document.createRange();
-						range.selectNode($document.body)
-					}
-					// Range.createContextualFragment() would be useful here but is
-					// only relatively recently standardized and is not supported in
-					// some browsers (IE9, for one)
-					var el = $document.createElement("div");
-					el.innerHTML = html;
-					var frag = $document.createDocumentFragment(), node, lastNode;
-					while ((node = el.firstChild)) {
-						lastNode = frag.appendChild(node);
-					}
-					var firstNode = frag.firstChild;
-					range.insertNode(frag);
-
-					// Preserve the selection
-					if (lastNode) {
-						range = range.cloneRange();
-						range.setStartAfter(lastNode);
-						range.collapse(true);
-						sel.removeAllRanges();
-						sel.addRange(range);
+						$document.body.insertAdjacentHTML('beforeend', html);
 					}
 
 				} else if ($document.selection && $document.selection.type != "Control") {

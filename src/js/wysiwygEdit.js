@@ -1,15 +1,19 @@
 var editorTemplate = "<div class=\"tinyeditor\">" +
-	"<div class=\"tinyeditor-header\" ng-hide=\"editMode\">" +
-	"{toolbar}" + // <-- we gonna replace it with the configured toolbar
-	"<div style=\"clear: both;\"></div>" +
-	"</div>" +
-	"<div class=\"sizer\" ngp-resizable>" +
-	"<textarea data-placeholder-attr=\"\" style=\"-webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; resize: none; width: 100%; height: 100%;\" ng-show=\"editMode\" ng-model=\"content\"></textarea>" +
-	"<iframe style=\"-webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; width: 100%; height: 100%;\" ng-hide=\"editMode\" ngp-content-frame=\"{sanitize: config.sanitize}\" content-style=\"{contentStyle}\" ng-model=\"content\"></iframe>" +
-	"</div>" +
-	"<div class=\"tinyeditor-footer\">" +
-	"<div ng-switch=\"editMode\" ng-click=\"editMode = !editMode\" class=\"toggle\"><span ng-switch-when=\"true\">wysiwyg</span><span ng-switch-default>source</span></div>" +
-	"</div>" +
+		"<div class=\"tinyeditor-header\" ng-if='toolbarPosition === \"top\"' ng-hide=\"editMode\">" +
+			"{toolbar}" + // <-- we gonna replace it with the configured toolbar
+			"<div style=\"clear: both;\"></div>" +
+		"</div>" +
+		"<div class=\"sizer\" ngp-resizable>" +
+			"<textarea data-placeholder-attr=\"\" style=\"-webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; resize: none; width: 100%; height: 100%;\" ng-show=\"editMode\" ng-model=\"content\"></textarea>" +
+			"<iframe style=\"-webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; width: 100%; height: 100%;\" ng-hide=\"editMode\" ngp-content-frame=\"{sanitize: config.sanitize}\" content-style=\"{contentStyle}\" ng-model=\"content\"></iframe>" +
+		"</div>" +
+		"<div class=\"tinyeditor-footer\">" +
+			"<div ng-switch=\"editMode\" ng-click=\"editMode = !editMode\" class=\"toggle\"><span ng-switch-when=\"true\">wysiwyg</span><span ng-switch-default>source</span></div>" +
+		"</div>" +
+		"<div class=\"tinyeditor-header\" ng-if='toolbarPosition === \"bottom\"' ng-hide=\"editMode\">" +
+			"{toolbar}" + // <-- we gonna replace it with the configured toolbar
+			"<div style=\"clear: both;\"></div>" +
+		"</div>" +
 	"</div>";
 
 angular.module('ngWYSIWYG').directive('wysiwygEdit', ['ngpUtils', 'NGP_EVENTS', '$rootScope', '$compile', '$timeout', '$q',
@@ -17,6 +21,7 @@ angular.module('ngWYSIWYG').directive('wysiwygEdit', ['ngpUtils', 'NGP_EVENTS', 
 		var linker = function (scope, $element, attrs, ctrl) {
 			scope.editMode = false;
 			scope.cursorStyle = {}; //current cursor/caret position style
+			scope.toolbarPosition = (scope.config && scope.config.toolbarPosition === "bottom") ? "bottom" : "top";
 
 			document.addEventListener('click', function () {
 				$rootScope.$broadcast(NGP_EVENTS.CLICK_AWAY);
@@ -360,9 +365,10 @@ angular.module('ngWYSIWYG').directive('wysiwygEdit', ['ngpUtils', 'NGP_EVENTS', 
 				);
 			}, toolbarGroups);
 
-			var template = editorTemplate.replace('{toolbar}', toolbarGroups.join(''));
+			var template = editorTemplate.replace(/\{toolbar\}/g, toolbarGroups.join(''));
 			template = template.replace('{contentStyle}', attrs.contentStyle || '');
-			//$element.replaceWith( angular.element($compile( editorTemplate.replace('{toolbar}', toolbarGroups.join('') ) )(scope)) );
+			//$element.replaceWith( angular.element($compile( editorTemplate.replace('{toolbar}',
+			// toolbarGroups.join('') ) )(scope)) );
 			$element.html(template);
 			$compile($element.contents())(scope);
 

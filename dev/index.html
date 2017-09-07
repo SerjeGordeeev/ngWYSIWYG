@@ -15,7 +15,7 @@
 			<h1>ngWYSIWYG - Angular real rich text editor.</h1>
 			<wysiwyg-edit content="content" config="editorConfig"></wysiwyg-edit>
 		</div>
-		<div class="col-xs-12" style="margin-bottom: 40px;">
+		<div class="col-xs-12" style="margin-bottom: 40px;">;
 			<h2>ng-model's value</h2>
 			<div class="alert alert-info">
 				{{content}}
@@ -34,7 +34,8 @@
 			controller('demoController', ['$scope', '$log', function($scope, $log) {
 				$scope.content = '';
 				$scope.editorConfig = {
-					fontAwesome: true
+					fontAwesome: true,
+					toolbarPosition: "bottom"
 				};
 				$scope.api = {
 					scope: $scope

@@ -42,6 +42,10 @@ angular.module('ngWYSIWYG').directive('ngpContentFrame', ['ngpImageResizer', 'ng
 				scope.$emit(NGP_EVENTS.ELEMENT_CLICKED, event.target);
 			});
 
+            scope.focusMethod = function () {
+                $document.querySelector('body').focus();
+            }
+
 			// this option enables you to specify a custom CSS to be used within the editor (the editable area)
 			if (attrs.contentStyle) {
 				$head.append('<link rel="stylesheet" type="text/css" href="' + attrs.contentStyle + '">');
@@ -203,7 +207,8 @@ angular.module('ngWYSIWYG').directive('ngpContentFrame', ['ngpImageResizer', 'ng
 			link: linker,
 			require: 'ngModel',
 			scope: {
-				config: '=ngpContentFrame'
+				config: '=ngpContentFrame',
+            	focusMethod: "="
 			},
 			replace: true,
 			restrict: 'AE'

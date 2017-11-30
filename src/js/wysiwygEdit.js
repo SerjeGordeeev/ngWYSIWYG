@@ -4,9 +4,9 @@ var editorTemplate = "<div class=\"tinyeditor\">" +
 			"<div style=\"clear: both;\"></div>" +
 		"</div>" +
 		"<div class=\"sizer\" ngp-resizable>" +
-            "<div ng-hide='content' class='wysiwyg-placeholder'>{{placeholder}}</div>"+
+            "<div ng-hide='content' ng-click='focus()' class='wysiwyg-placeholder'>{{placeholder}}</div>"+
 			"<textarea data-placeholder-attr=\"\" style=\"-webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; resize: none; width: 100%; height: 100%;\" ng-show=\"editMode\" ng-model=\"content\"></textarea>" +
-			"<iframe style=\"-webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; width: 100%; height: 100%;\" ng-hide=\"editMode\" ngp-content-frame=\"{sanitize: config.sanitize}\" content-style=\"{contentStyle}\" ng-model=\"content\"></iframe>" +
+			"<iframe style=\"-webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; width: 100%; height: 100%;\" ng-hide=\"editMode\" ngp-content-frame=\"{sanitize: config.sanitize}\"  content-style=\"{contentStyle}\" focus-method='focus' ng-model=\"content\"></iframe>" +
 		"</div>" +
 		"<div class=\"tinyeditor-footer\">" +
 			"<div ng-switch=\"editMode\" ng-click=\"editMode = !editMode\" class=\"toggle\"><span ng-switch-when=\"true\">wysiwyg</span><span ng-switch-default>source</span></div>" +
@@ -44,6 +44,13 @@ angular.module('ngWYSIWYG').directive('wysiwygEdit', ['ngpUtils', 'NGP_EVENTS', 
 			function insertElement(html) {
 				scope.$broadcast('insertElement', html);
 			}
+
+            /***
+             * Эта функция передается в директиву ngpContentFrame в качестве параметра focusMethod,
+             * в ней она переприсваивается на функцию, ставящую focus на body в iframe
+             * это нужно чтобы фокус срабатывал при клике на плейсхолдер
+             * */
+            scope.focus = function () {}
 
 			scope.panelButtons = {
 				'-': {type: 'div', class: 'tinyeditor-divider'},

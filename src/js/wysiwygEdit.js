@@ -4,6 +4,7 @@ var editorTemplate = "<div class=\"tinyeditor\">" +
 			"<div style=\"clear: both;\"></div>" +
 		"</div>" +
 		"<div class=\"sizer\" ngp-resizable>" +
+            "<div ng-hide='content' class='wysiwyg-placeholder'>{{placeholder}}</div>"+
 			"<textarea data-placeholder-attr=\"\" style=\"-webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; resize: none; width: 100%; height: 100%;\" ng-show=\"editMode\" ng-model=\"content\"></textarea>" +
 			"<iframe style=\"-webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; width: 100%; height: 100%;\" ng-hide=\"editMode\" ngp-content-frame=\"{sanitize: config.sanitize}\" content-style=\"{contentStyle}\" ng-model=\"content\"></iframe>" +
 		"</div>" +
@@ -564,7 +565,8 @@ angular.module('ngWYSIWYG').directive('wysiwygEdit', ['ngpUtils', 'NGP_EVENTS', 
 			scope: {
 				content: '=', //this is our content which we want to edit
 				api: '=', //this is our api object
-				config: '='
+				config: '=',
+                placeholder: "@"
 			},
 			restrict: 'AE',
 			replace: true
